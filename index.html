@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaSync IoT Workspace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-area">
+                <i class="fa-solid fa-water gradient-icon"></i>
+                <h2>AquaSync</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active"><i class="fa-solid fa-border-all"></i> <span>Dashboard</span></a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-droplet"></i> <span>Live Tank Status</span></a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-chart-line"></i> <span>Analytics</span></a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-bell"></i> <span>Alerts</span></a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> <span>Settings</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="icon-btn theme-btn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i> <span>Dark Mode</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Dashboard Overview</h1>
+                    <p class="subtitle">Real-time IoT Smart Water Tank Monitoring</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="connection-status" id="connection-status">
+                        <span class="status-dot disconnected"></span>
+                        <span class="status-text">Disconnected</span>
+                    </div>
+                    <button id="connect-btn" class="btn-primary">
+                        <i class="fa-brands fa-usb"></i> Connect Device
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Grid -->
+            <main class="dashboard-layout">
+                
+                <!-- Metrics Row -->
+                <div class="metrics-row">
+                    <div class="metric-card glass-panel">
+                        <div class="card-icon blue"><i class="fa-solid fa-ruler-vertical"></i></div>
+                        <div class="card-details">
+                            <h3>Water Level</h3>
+                            <div class="value"><span id="water-level-val">0.0</span> <span class="unit">cm</span></div>
+                        </div>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <div class="card-icon cyan"><i class="fa-solid fa-arrows-up-down"></i></div>
+                        <div class="card-details">
+                            <h3>Distance to Sensor</h3>
+                            <div class="value"><span id="distance-val">0.0</span> <span class="unit">cm</span></div>
+                        </div>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <div class="card-icon green"><i class="fa-solid fa-clock"></i></div>
+                        <div class="card-details">
+                            <h3>Est. Time to Full</h3>
+                            <div class="value"><span id="est-time">--</span></div>
+                        </div>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <div class="card-icon white"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="card-details">
+                            <h3>System Status</h3>
+                            <div class="value"><span id="status-val" class="status-badge safe">Normal</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Middle Area -->
+                <div class="middle-row">
+                    <!-- Tank Vis -->
+                    <div class="tank-panel glass-panel">
+                        <div class="panel-header">
+                            <h2>Live Tank Monitor</h2>
+                            <button class="icon-btn-small" id="hint-btn" title="Press 'M' for Mock Data"><i class="fa-solid fa-circle-info"></i></button>
+                        </div>
+                        <div id="mock-hint" class="hint-text hidden">Press 'M' to toggle mock data</div>
+                        <div class="tank-display">
+                            <div class="tank-container-3d">
+                                <div class="tank-glass">
+                                    <div class="tank-measurements">
+                                        <span>100%</span>
+                                        <span>75%</span>
+                                        <span>50%</span>
+                                        <span>25%</span>
+                                        <span>0%</span>
+                                    </div>
+                                    <div class="liquid" id="liquid">
+                                        <div class="liquid-surface"></div>
+                                        <div class="liquid-bubbles"></div>
+                                        <div class="liquid-wave wave1"></div>
+                                        <div class="liquid-wave wave2"></div>
+                                    </div>
+                                    <div class="percentage-display">
+                                        <span id="percentage-val-large">0</span>%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tank-footer">
+                            <div class="setting-group">
+                                <label for="max-depth">Tank Depth (cm):</label>
+                                <input type="number" id="max-depth" value="100" min="10" max="500" class="input-glass">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Graph and AI Card -->
+                    <div class="right-vertical-layout">
+                        <!-- Smart Feature / AI Card -->
+                        <div class="ai-card glass-panel">
+                            <div class="panel-header">
+                                <h2><i class="fa-solid fa-wand-magic-sparkles gradient-text"></i> Smart Insights</h2>
+                            </div>
+                            <div class="ai-content">
+                                <div class="insight-row">
+                                    <span class="label">Current Fill Rate</span>
+                                    <strong id="fill-rate" class="value-text">0.00 cm/min</strong>
+                                </div>
+                                <div class="insight-row">
+                                    <span class="label">Usage Trend</span>
+                                    <strong class="value-text trend-down"><i class="fa-solid fa-arrow-trend-down"></i> Moderating</strong>
+                                </div>
+                                <div class="insight-row">
+                                    <span class="label">Daily Est. Consumption</span>
+                                    <strong class="value-text">~320 L <span class="muted-text">(-5% vs yday)</span></strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Graph Card -->
+                        <div class="graph-card glass-panel flex-grow">
+                            <div class="panel-header">
+                                <h2>Real-time Level vs Time</h2>
+                                <div class="live-indicator"><span class="pulse-dot"></span> Live</div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="waterChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: Alerts Panel -->
+                <div class="alerts-panel glass-panel">
+                    <div class="panel-header">
+                        <h2>Event History & Alerts</h2>
+                        <button class="icon-btn-small" id="clear-alerts" title="Clear Event Log"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    <div class="alerts-list" id="alerts-list">
+                        <!-- Alert items go here -->
+                        <div class="alert-item empty-state" id="empty-alerts">No recent alerts. System is running smoothly.</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <audio id="alert-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto" loop></audio>
+    <script src="app.js"></script>
+</body>
+</html>
